@@ -4,6 +4,7 @@
  * @author Michael Usher <michael.usher@aarnet.edu.au>
  *
  * @copyright Copyright (c) 2018, ownCloud GmbH
+ * Modified by BW-Tech GmbH for owncloud.online (PHP 8.4).
  * @license GPL-2.0
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -62,6 +63,13 @@ class ThrottleTest extends TestCase {
 		$this->loginAttemptMapper = $this->createMock(FailedLoginAttemptMapper::class);
 		$this->linkAccessMapper = $this->createMock(FailedLinkAccessMapper::class);
 		$this->lMock = $this->createMock(IL10N::class);
+		// IL10N::t() liefert in Produktion immer einen String; ohne diesen Stub
+		// gäbe der Mock null zurück und das landete als Exception-Message ->
+		// "Passing null to Exception::__construct" ist unter PHP 8.4 deprecated.
+		$this->lMock->method('t')
+			->willReturnCallback(static function ($text, $params = []) {
+				return \vsprintf($text, (array)$params);
+			});
 		$this->loggerMock = $this->createMock(ILogger::class);
 		$this->timeFactoryMock = $this->createMock(ITimeFactory::class);
 		$this->configMock = $this->createMock(BruteForceProtectionConfig::class);

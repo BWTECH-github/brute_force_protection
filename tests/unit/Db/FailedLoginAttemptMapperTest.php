@@ -4,6 +4,7 @@
  * @author Michael Usher <michael.usher@aarnet.edu.au>
  *
  * @copyright Copyright (c) 2018, ownCloud GmbH
+ * Modified by BW-Tech GmbH for owncloud.online (PHP 8.4).
  * @license GPL-2.0
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -58,7 +59,7 @@ class FailedLoginAttemptMapperTest extends TestCase {
 		$this->mapper = new FailedLoginAttemptMapper($this->connection, $this->timeFactoryMock);
 
 		$query = $this->connection->getQueryBuilder()->select('*')->from($this->dbTable);
-		$result = $query->execute()->fetchAll();
+		$result = $query->execute()->fetchAllAssociative();
 		$this->assertEmpty($result, 'we need to start with a empty bfp_failed_logins table');
 
 		$this->addInitialTestEntries();
@@ -119,7 +120,7 @@ class FailedLoginAttemptMapperTest extends TestCase {
 		$query = $builder->select('*')->from($this->dbTable)
 			->Where($builder->expr()->eq('ip', $builder->createNamedParameter("192.168.1.1")))
 			->andWhere($builder->expr()->eq('uid', $builder->createNamedParameter("test1")));
-		$result = $query->execute()->fetchAll();
+		$result = $query->execute()->fetchAllAssociative();
 		$this->assertCount(3, $result);
 
 		$this->mapper->deleteFailedLoginAttemptsForUidIpCombination('test1', "192.168.1.1");
@@ -127,7 +128,7 @@ class FailedLoginAttemptMapperTest extends TestCase {
 		$query = $builder->select('*')->from($this->dbTable)
 			->Where($builder->expr()->eq('ip', $builder->createNamedParameter("192.168.1.1")))
 			->andWhere($builder->expr()->eq('uid', $builder->createNamedParameter("test1")));
-		$result = $query->execute()->fetchAll();
+		$result = $query->execute()->fetchAllAssociative();
 		$this->assertCount(0, $result);
 	}
 
@@ -137,11 +138,11 @@ class FailedLoginAttemptMapperTest extends TestCase {
 		$this->timeFactoryMock->method('getTime')
 			->willReturn($functionCallTime);
 		$query = $builder->select('*')->from($this->dbTable);
-		$result = $query->execute()->fetchAll();
+		$result = $query->execute()->fetchAllAssociative();
 		$this->assertCount(5, $result);
 		$this->mapper->deleteOldFailedLoginAttempts(60);
 		$query = $builder->select('*')->from($this->dbTable);
-		$result = $query->execute()->fetchAll();
+		$result = $query->execute()->fetchAllAssociative();
 		$this->assertCount(1, $result);
 	}
 }

@@ -4,6 +4,7 @@
  * @author Michael Usher <michael.usher@aarnet.edu.au>
  *
  * @copyright Copyright (c) 2018, ownCloud GmbH
+ * Modified by BW-Tech GmbH for owncloud.online (PHP 8.4).
  * @license GPL-2.0
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -72,7 +73,7 @@ class FailedLoginAttemptMapper extends Mapper {
 			->andWhere($builder->expr()->eq('uid', $builder->createNamedParameter($uid)))
 			->andWhere($builder->expr()->eq('ip', $builder->createNamedParameter($ip)))
 			->execute()
-			->fetch();
+			->fetchAssociative();
 		return \intval($attempts['count']);
 	}
 
@@ -91,7 +92,7 @@ class FailedLoginAttemptMapper extends Mapper {
 			->orderBy('attempted_at', 'DESC')
 			->setMaxResults(1)
 			->execute()
-			->fetch();
+			->fetchAssociative();
 		return ($lastAttempt === false) ? null : \intval($lastAttempt['attempted_at']);
 	}
 
