@@ -28,7 +28,7 @@ script('brute_force_protection', 'settings-admin');
 ?>
 <div id="brute-force-protection" class="section">
 	<h2 class="inlineblock"><?php p($l->t('Brute Force Protection')); ?></h2>
-	<span id="save-bfp-settings-message" class="msg"></span>
+	<span id="save-bfp-settings-message" class="msg" role="status" aria-live="polite" aria-atomic="true"></span>
 	<div>
 		<label for="bfp-threshold-time"><?php p($l->t('Count failed attempts over how many seconds?')) ?></label><br>
 		<input type="number" id="bfp-threshold-time"  value="<?php p($_['bruteForceProtectionTimeThreshold']) ?>"><br>
