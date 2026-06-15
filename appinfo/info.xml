@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- Modified by BW-Tech GmbH for owncloud.online (PHP 8.4). -->
 <info>
 	<id>brute_force_protection</id>
 	<name>Brute-Force Protection</name>
@@ -17,16 +18,18 @@ Also, ownCloud administrators can take further steps to increase user account se
 2. Enabling two- or multi-factor authentication (e.g., a time-based one-time password), which can, theoretically, make brute-force attacks impossible.
 
 See the [2-Factor Authentication](https://marketplace.owncloud.com/apps/twofactor_totp) extension, [more sophisticated MFA solutions](https://marketplace.owncloud.com/apps/category/security) or outsourcing user authentication to an Identity Provider via the [SAML/SSO Integration](https://marketplace.owncloud.com/apps/user_shibboleth) for further information.
+
+This is a PHP 8.4 fork maintained by BW-Tech GmbH for owncloud.online.
     </description>
 	<summary>Prevent attackers from guessing user passwords</summary>
 	<licence>GPLv2</licence>
-	<author>Semih Serhat Karakaya</author>
+	<author>Semih Serhat Karakaya, modified by BW-Tech GmbH</author>
 	<version>1.4.0</version>
 	<namespace>BruteForceProtection</namespace>
 	<use-migrations>true</use-migrations>
 	<dependencies>
-		<owncloud min-version="11" max-version="11" />
-		<php min-version="8.3" />
+		<owncloud min-version="11" max-version="11.99" />
+		<php min-version="8.4" />
 	</dependencies>
 	<types>
 		<prelogin/>
@@ -42,7 +45,7 @@ See the [2-Factor Authentication](https://marketplace.owncloud.com/apps/twofacto
 	<documentation>
 		<admin>https://doc.owncloud.com/server/latest/admin_manual/configuration/server/security/brute_force_protection.html</admin>
 	</documentation>
-	<website>https://github.com/owncloud/brute_force_protection</website>
-	<bugs>https://github.com/owncloud/brute_force_protection/issues</bugs>
-	<repository type="git">https://github.com/owncloud/brute_force_protection.git</repository>
+	<website>https://github.com/GrossLukas/brute_force_protection</website>
+	<bugs>https://github.com/GrossLukas/brute_force_protection/issues</bugs>
+	<repository type="git">https://github.com/GrossLukas/brute_force_protection.git</repository>
 </info>

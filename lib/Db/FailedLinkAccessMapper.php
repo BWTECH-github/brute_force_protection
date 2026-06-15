@@ -3,6 +3,7 @@
  * @author Semih Serhat Karakaya <karakayasemi@itu.edu.tr>
  *
  * @copyright Copyright (c) 2020 ownCloud GmbH
+ * Modified by BW-Tech GmbH for owncloud.online (PHP 8.4).
  * @license GPL-2.0
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -71,7 +72,7 @@ class FailedLinkAccessMapper extends Mapper {
 			->andWhere($builder->expr()->eq('link_token', $builder->createNamedParameter($token)))
 			->andWhere($builder->expr()->eq('ip', $builder->createNamedParameter($ip)))
 			->execute()
-			->fetch();
+			->fetchAssociative();
 		return \intval($attempts['count']);
 	}
 
@@ -90,7 +91,7 @@ class FailedLinkAccessMapper extends Mapper {
 			->orderBy('attempted_at', 'DESC')
 			->setMaxResults(1)
 			->execute()
-			->fetch();
+			->fetchAssociative();
 		return ($lastAttempt === false) ? null : \intval($lastAttempt['attempted_at']);
 	}
 

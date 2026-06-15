@@ -3,6 +3,7 @@
  * @author Semih Serhat Karakaya <karakayasemi@itu.edu.tr>
  *
  * @copyright Copyright (c) 2020, ownCloud GmbH
+ * Modified by BW-Tech GmbH for owncloud.online (PHP 8.4).
  * @license GPL-2.0
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -59,7 +60,7 @@ class FailedLinkAccessMapperTest extends TestCase {
 		$this->mapper = new FailedLinkAccessMapper($this->connection, $this->timeFactoryMock);
 
 		$query = $this->connection->getQueryBuilder()->select('*')->from($this->dbTable);
-		$result = $query->execute()->fetchAll();
+		$result = $query->execute()->fetchAllAssociative();
 		$this->assertEmpty($result, 'we need to start with a empty bfp_link_accesses table');
 
 		$this->addInitialTestEntries();
@@ -120,7 +121,7 @@ class FailedLinkAccessMapperTest extends TestCase {
 		$query = $builder->select('*')->from($this->dbTable)
 			->Where($builder->expr()->eq('ip', $builder->createNamedParameter("192.168.1.1")))
 			->andWhere($builder->expr()->eq('link_token', $builder->createNamedParameter("token1")));
-		$result = $query->execute()->fetchAll();
+		$result = $query->execute()->fetchAllAssociative();
 		$this->assertCount(3, $result);
 
 		$this->mapper->deleteFailedAccessForTokenIpCombination('token1', "192.168.1.1");
@@ -128,7 +129,7 @@ class FailedLinkAccessMapperTest extends TestCase {
 		$query = $builder->select('*')->from($this->dbTable)
 			->Where($builder->expr()->eq('ip', $builder->createNamedParameter("192.168.1.1")))
 			->andWhere($builder->expr()->eq('link_token', $builder->createNamedParameter("token1")));
-		$result = $query->execute()->fetchAll();
+		$result = $query->execute()->fetchAllAssociative();
 		$this->assertCount(0, $result);
 	}
 
@@ -138,11 +139,11 @@ class FailedLinkAccessMapperTest extends TestCase {
 		$this->timeFactoryMock->method('getTime')
 			->willReturn($functionCallTime);
 		$query = $builder->select('*')->from($this->dbTable);
-		$result = $query->execute()->fetchAll();
+		$result = $query->execute()->fetchAllAssociative();
 		$this->assertCount(5, $result);
 		$this->mapper->deleteOldFailedAccesses(60);
 		$query = $builder->select('*')->from($this->dbTable);
-		$result = $query->execute()->fetchAll();
+		$result = $query->execute()->fetchAllAssociative();
 		$this->assertCount(1, $result);
 	}
 }
