@@ -45,7 +45,7 @@ This is a PHP 8.4 fork maintained by BW-Tech GmbH for owncloud.online.
 	<documentation>
 		<admin>https://doc.owncloud.com/server/latest/admin_manual/configuration/server/security/brute_force_protection.html</admin>
 	</documentation>
-	<website>https://github.com/GrossLukas/brute_force_protection</website>
-	<bugs>https://github.com/GrossLukas/brute_force_protection/issues</bugs>
-	<repository type="git">https://github.com/GrossLukas/brute_force_protection.git</repository>
+	<website>https://github.com/BWTECH-github/brute_force_protection</website>
+	<bugs>https://github.com/BWTECH-github/brute_force_protection/issues</bugs>
+	<repository type="git">https://github.com/BWTECH-github/brute_force_protection.git</repository>
 </info>
