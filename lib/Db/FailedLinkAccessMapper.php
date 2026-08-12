@@ -3,7 +3,6 @@
  * @author Semih Serhat Karakaya <karakayasemi@itu.edu.tr>
  *
  * @copyright Copyright (c) 2020 ownCloud GmbH
- * Modified by BW-Tech GmbH for owncloud.online (PHP 8.4).
  * @license GPL-2.0
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -20,6 +19,11 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
+ * @copyright Copyright (c) 2026, BW-Tech GmbH
+ *
+ * Modified by BW-Tech GmbH on 2026-06-15.
+ * Changes:
+ *   - Bundle expanded SaaS apps for 11.0.3
  */
 
 namespace OCA\BruteForceProtection\Db;

@@ -20,6 +20,11 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
+ * @copyright Copyright (c) 2026, BW-Tech GmbH
+ *
+ * Modified by BW-Tech GmbH on 2026-06-15.
+ * Changes:
+ *   - Bundle expanded SaaS apps for 11.0.3
  */
 
 namespace OCA\BruteForceProtection;
@@ -106,6 +111,36 @@ class Throttle {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Verbleibende Sperrzeit in Sekunden, 0 wenn gerade keine Sperre gilt.
+	 *
+	 * Dieselbe Entscheidung wie applyBruteForcePolicyForLogin(), nur als Frage
+	 * statt als Ausnahme gestellt: das Anmeldeformular kann damit einen Hinweis
+	 * mit Restzeit zeigen, statt den Nutzer auf eine Fehlerseite ohne Formular zu
+	 * schicken. Die Methode aendert nichts und zaehlt nichts mit.
+	 *
+	 * @param string $uid
+	 * @param string $ip
+	 * @return int
+	 */
+	public function getRemainingBanTimeForLogin($uid, $ip) {
+		$lastAttempt = $this->loginAttemptMapper->getLastFailedLoginAttemptTimeForUidIpCombination($uid, $ip);
+		if ($lastAttempt === null) {
+			return 0;
+		}
+		$verbleibend = $lastAttempt + $this->config->getBruteForceProtectionBanPeriod()
+			- $this->timeFactory->getTime();
+		if ($verbleibend <= 0) {
+			return 0;
+		}
+		$thresholdTime = $lastAttempt - $this->config->getBruteForceProtectionTimeThreshold();
+		if ($this->loginAttemptMapper->getFailedLoginCountForUidIpCombination($uid, $ip, $thresholdTime) <
+			$this->config->getBruteForceProtectionFailTolerance()) {
+			return 0;
+		}
+		return (int)$verbleibend;
 	}
 
 	/**

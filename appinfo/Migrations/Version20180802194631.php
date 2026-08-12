@@ -1,4 +1,12 @@
 <?php
+/**
+ *
+ * @copyright Copyright (c) 2026, BW-Tech GmbH
+ *
+ * Modified by BW-Tech GmbH on 2026-06-15.
+ * Changes:
+ *   - Bundle expanded SaaS apps for 11.0.3
+ */
 namespace OCA\brute_force_protection\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;

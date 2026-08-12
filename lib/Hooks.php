@@ -20,6 +20,12 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
+ * @copyright Copyright (c) 2026, BW-Tech GmbH
+ *
+ * Modified by BW-Tech GmbH on 2026-07-03.
+ * Changes:
+ *   - key login throttling on a case-folded uid
+ *   - Bundle expanded SaaS apps for 11.0.3
  */
 
 namespace OCA\BruteForceProtection;
@@ -88,6 +94,13 @@ class Hooks {
 		$this->eventDispatcher->addListener('user.afterlogin', [$this, 'postLoginCallback']);
 		$this->eventDispatcher->addListener('user.beforelogin', [$this, 'preLoginCallback']);
 
+		/* Das Anmeldeformular fragt vor der Pruefung der Zugangsdaten, ob und wie
+		   lange gerade gesperrt ist. Beantwortet diese App die Frage, tritt die
+		   Bremse im Kern zurueck und ueberlaesst uns die Richtlinie - so gilt
+		   genau eine statt zweier widerspruechlicher, und der Nutzer sieht den
+		   Hinweis mit Restzeit statt einer Fehlerseite ohne Anmeldeformular. */
+		$this->eventDispatcher->addListener('user.login.throttlequery', [$this, 'throttleQueryCallback']);
+
 		/* Public link share events */
 		$this->eventDispatcher->addListener('share.failedpasswordcheck', [$this, 'failedLinkShareAuthCallback']);
 		$this->eventDispatcher->addListener('share.afterpasswordcheck', [$this, 'postLinkShareAuthCallback']);
@@ -95,10 +108,24 @@ class Hooks {
 	}
 
 	/**
+	 * ownCloud resolves login names case-insensitively (you cannot even create
+	 * "Admin" while "admin" exists, and occ resolves either casing to the same
+	 * account), so brute-force counters must be keyed on a case-folded uid.
+	 * Otherwise an attacker multiplies the allowed attempts simply by varying the
+	 * case — "admin", "Admin", "ADMIN" each get their own counter — and a user's
+	 * failed attempts stored under one casing are never cleared by a successful
+	 * login, which reports the canonical casing via getUID(). Case-folding cannot
+	 * merge two distinct accounts because case-only-distinct uids cannot exist.
+	 */
+	private function normalizeUid($uid): string {
+		return \mb_strtolower((string)$uid);
+	}
+
+	/**
 	 * @param GenericEvent $event
 	 */
 	public function failedLoginCallback($event) {
-		$uid = $event->getArgument('user');
+		$uid = $this->normalizeUid($event->getArgument('user'));
 		// apply policy to throw the login exception if needed.
 		// The failed login attempt won't be stored if the exception is thrown (same behavior with OC 10.11 and earlier)
 		$this->throttle->applyBruteForcePolicyForLogin($uid, $this->request->getRemoteAddress());
@@ -116,7 +143,7 @@ class Hooks {
 	public function postLoginCallback($event) {
 		/** @var \OCP\IUser $user */
 		$user = $event->getArgument('user');
-		$this->loginAttemptMapper->deleteFailedLoginAttemptsForUidIpCombination($user->getUID(), $this->request->getRemoteAddress());
+		$this->loginAttemptMapper->deleteFailedLoginAttemptsForUidIpCombination($this->normalizeUid($user->getUID()), $this->request->getRemoteAddress());
 	}
 
 	/**
@@ -124,8 +151,27 @@ class Hooks {
 	 * @throws LoginException
 	 */
 	public function preLoginCallback($event) {
-		$uid = $event->getArgument('login');
+		$uid = $this->normalizeUid($event->getArgument('login'));
 		$this->throttle->applyBruteForcePolicyForLogin($uid, $this->request->getRemoteAddress());
+	}
+
+	/**
+	 * Beantwortet die Frage des Anmeldeformulars nach der Restsperrzeit.
+	 *
+	 * 'handled' zeigt dem Kern an, dass diese App die Richtlinie stellt; er
+	 * benutzt dann seine eigene Bremse nicht mehr. Gesetzt wird das auch bei
+	 * Restzeit 0 - sonst entschiede der Kern bei jedem freien Versuch wieder
+	 * selbst, und beide Zaehler liefen nebeneinander her.
+	 *
+	 * @param GenericEvent $event
+	 */
+	public function throttleQueryCallback($event) {
+		$uid = $this->normalizeUid($event->getArgument('login'));
+		$event->setArgument(
+			'retryAfter',
+			$this->throttle->getRemainingBanTimeForLogin($uid, $this->request->getRemoteAddress())
+		);
+		$event->setArgument('handled', true);
 	}
 
 	/**

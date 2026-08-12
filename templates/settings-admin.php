@@ -20,6 +20,12 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
+ * @copyright Copyright (c) 2026, BW-Tech GmbH
+ *
+ * Modified by BW-Tech GmbH on 2026-06-15.
+ * Changes:
+ *   - WCAG 2.1 AA fixes for bundled plugin forks
+ *   - Bundle expanded SaaS apps for 11.0.3
  */
 
 /** @var array $_ */
