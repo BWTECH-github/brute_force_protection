@@ -24,7 +24,7 @@ This is a PHP 8.4 fork maintained by BW-Tech GmbH for owncloud.online.
 	<summary>Prevent attackers from guessing user passwords</summary>
 	<licence>GPLv2</licence>
 	<author>Semih Serhat Karakaya, modified by BW-Tech GmbH</author>
-	<version>1.5.0</version>
+	<version>1.5.1</version>
 	<namespace>BruteForceProtection</namespace>
 	<use-migrations>true</use-migrations>
 	<dependencies>
