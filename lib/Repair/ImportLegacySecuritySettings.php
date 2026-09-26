@@ -43,6 +43,10 @@ use OCP\Migration\IRepairStep;
  * vorhandene Werte werden nie überschrieben und nie mit Altwerten gemischt.
  * Der Altbestand bleibt unverändert liegen. Ein zweiter Lauf findet die eigenen
  * Schlüssel vor und tut nichts.
+ *
+ * Unterschied, den der Administrator kennen muss: "security" drosselte nur
+ * Anmeldungen, diese App wendet dieselben drei Werte auch auf falsche
+ * Kennwörter an öffentlichen Links an. Das steht deshalb im Protokoll.
  */
 class ImportLegacySecuritySettings implements IRepairStep {
 	public const APP = 'brute_force_protection';
@@ -85,11 +89,13 @@ class ImportLegacySecuritySettings implements IRepairStep {
 		$imported = [];
 		foreach ($legacy as $key) {
 			$raw = (string)$this->config->getAppValue(self::LEGACY_APP, $key, '');
-			$value = \trim($raw);
-			// "security" hat nur positive Ganzzahlen gespeichert (Prüfung im
-			// Browser). Alles andere wäre hier ein kaputter Wert; dann greift
+			// Genau so auswerten, wie "security" gelesen hat (SecurityConfig:
+			// intval). Deren Oberfläche ließ jede Zahl > 0 durch, also auch
+			// "600.0" oder "10.5" - "security" arbeitete dann mit 600 bzw. 10.
+			// Erst was dort nicht > 0 ergab, ist hier unbrauchbar; dann greift
 			// der Standard dieser App.
-			if (!\ctype_digit($value) || (int)$value <= 0) {
+			$value = \intval($raw);
+			if ($value <= 0) {
 				$message = \sprintf(
 					'Legacy setting %s/%s has no usable value ("%s"); keeping the default of %s.',
 					self::LEGACY_APP,
@@ -101,13 +107,15 @@ class ImportLegacySecuritySettings implements IRepairStep {
 				$this->logger->warning($message, ['app' => self::APP]);
 				continue;
 			}
-			$this->config->setAppValue(self::APP, $key, (string)(int)$value);
-			$imported[] = "$key=" . (int)$value;
+			$this->config->setAppValue(self::APP, $key, (string)$value);
+			$imported[] = "$key=$value";
 		}
 
 		if ($imported !== []) {
 			$message = 'Imported brute-force settings from the predecessor app "security": '
-				. \implode(', ', $imported) . '. Please review them in the admin settings.';
+				. \implode(', ', $imported)
+				. '. Note: they now also apply to wrong passwords on public links, not only to logins.'
+				. ' Please review them in the admin settings.';
 			$output->info($message);
 			// Warnstufe, damit der Hinweis auch beim Standard-Loglevel 2 im
 			// Serverprotokoll landet - die Übernahme soll nachvollziehbar sein.

@@ -66,8 +66,24 @@ bis 10.0.8), liegen die drei Werte dort unter `appid=security` mit denselben
 Schlüsselnamen. Wird brute_force_protection auf so einer Datenbank zum ersten
 Mal installiert und hat noch keinen eigenen Wert, übernimmt sie diese Werte
 (Reparaturschritt `ImportLegacySecuritySettings`, Hinweis im Serverprotokoll).
+Die Werte werden so gelesen wie von security selbst (ganzzahliger Anteil, also
+`600.0` → 600); nur was dabei nicht größer als 0 ist, bleibt beim Standard.
 Eigene Werte werden nie überschrieben, der Altbestand bleibt liegen. War die App
 in der alten Datenbank schon installiert, gilt ihr eigener Stand.
+
+Achtung: security drosselte nur Anmeldungen. brute_force_protection wendet
+dieselben drei Werte auch auf falsche Kennwörter an öffentlichen Links an (je
+Link und Adresse). Wer in security etwa nur einen Fehlversuch erlaubt hatte,
+sperrt nach dem Umzug auch Link-Besucher nach dem ersten Tippfehler für die
+ganze Sperrdauer.
+
+Die App ist nicht standardmäßig eingeschaltet. Kennt die alte Datenbank sie
+noch nicht, installiert `occ upgrade` sie deshalb nicht; die Übernahme läuft
+erst, wenn sie nach dem Upgrade eingeschaltet wird:
+
+```bash
+sudo -u www-data php8.4 occ app:enable brute_force_protection
+```
 
 ## Hinweise zum Betrieb
 

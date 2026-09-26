@@ -16,6 +16,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
   überschrieben oder gemischt, der Altbestand bleibt liegen, ein zweiter Lauf
   tut nichts. Die Übernahme steht im Serverprotokoll. War die App in der alten
   Datenbank schon installiert (Update-Weg), läuft der Schritt nicht.
+- Die Altwerte werden wie in `security` per `intval` gelesen: `600.0`, `10.5`
+  oder `1e3`, die deren Oberfläche zuließ, ergeben 600, 10 bzw. 1000 statt des
+  Standards dieser App. Nur Werte, die dabei nicht größer als 0 sind, bleiben
+  beim Standard (Warnung im Protokoll).
+- Protokollhinweis und README nennen, dass die übernommenen Werte hier auch für
+  falsche Kennwörter an öffentlichen Links gelten; `security` drosselte nur
+  Anmeldungen. Die README nennt außerdem `occ app:enable
+  brute_force_protection` nach dem Upgrade, weil die App nicht standardmäßig
+  eingeschaltet ist.
 
 ## [1.5.1] - 2026-08-13
 

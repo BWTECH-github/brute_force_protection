@@ -169,6 +169,46 @@ class ImportLegacySecuritySettingsTest extends TestCase {
 		], $this->currentSettings());
 	}
 
+	public function testReadsLegacyValuesLikeSecurityDid(): void {
+		// Die Oberfläche von "security" ließ jede Zahl > 0 durch; gelesen hat
+		// sie per intval. Genau diese Werte müssen hier ankommen, nicht der
+		// Standard dieser App.
+		$this->config->setAppValue('security', 'brute_force_protection_fail_tolerance', '10.5');
+		$this->config->setAppValue('security', 'brute_force_protection_time_threshold', '600.0');
+		$this->config->setAppValue('security', 'brute_force_protection_ban_period', '1e3');
+
+		$this->runStep();
+
+		$this->assertSame([
+			'brute_force_protection_fail_tolerance' => '10',
+			'brute_force_protection_time_threshold' => '600',
+			'brute_force_protection_ban_period' => '1000',
+		], $this->currentSettings());
+	}
+
+	public function testSkipsNegativeLegacyValue(): void {
+		$this->config->setAppValue('security', 'brute_force_protection_fail_tolerance', '-5');
+		$this->config->setAppValue('security', 'brute_force_protection_time_threshold', '600');
+
+		$this->runStep();
+
+		$this->assertSame([
+			'brute_force_protection_fail_tolerance' => null,
+			'brute_force_protection_time_threshold' => '600',
+			'brute_force_protection_ban_period' => null,
+		], $this->currentSettings());
+	}
+
+	public function testLogNamesTheWiderScopeForPublicLinks(): void {
+		$this->config->setAppValue('security', 'brute_force_protection_fail_tolerance', '5');
+		$logger = $this->createMock(ILogger::class);
+		$logger->expects($this->once())
+			->method('warning')
+			->with($this->stringContains('public links'), ['app' => 'brute_force_protection']);
+
+		(new ImportLegacySecuritySettings($this->config, $logger))->run($this->createMock(IOutput::class));
+	}
+
 	public function testStepIsRegisteredAsInstallRepairStep(): void {
 		$info = \OC::$server->getAppManager()->getAppInfo('brute_force_protection');
 
