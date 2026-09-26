@@ -55,6 +55,20 @@ sudo -u www-data php8.4 occ config:app:set brute_force_protection \
   brute_force_protection_fail_tolerance --value=5
 ```
 
+## Umzug von einer älteren Instanz
+
+Die Einstellungen stehen in `oc_appconfig` unter `appid=brute_force_protection`
+und werden nach einem Umzug der Datenbank unverändert weiter gelesen, die
+Tabellen `oc_bfp_failed_logins` und `oc_bfp_link_accesses` ebenso.
+
+Kommt die Datenbank noch aus der Zeit der Vorgänger-App **security** (ownCloud
+bis 10.0.8), liegen die drei Werte dort unter `appid=security` mit denselben
+Schlüsselnamen. Wird brute_force_protection auf so einer Datenbank zum ersten
+Mal installiert und hat noch keinen eigenen Wert, übernimmt sie diese Werte
+(Reparaturschritt `ImportLegacySecuritySettings`, Hinweis im Serverprotokoll).
+Eigene Werte werden nie überschrieben, der Altbestand bleibt liegen. War die App
+in der alten Datenbank schon installiert, gilt ihr eigener Stand.
+
 ## Hinweise zum Betrieb
 
 **Hinter einem Reverse-Proxy** sieht der Server als Absender jeder Anfrage den

@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.5.2] - 2026-09-26
+
+### Added
+
+- Umzug alter Datenbanken: Wird die App auf einer Datenbank erstmals
+  installiert, in der noch die Vorgänger-App `security` (ownCloud bis 10.0.8)
+  ihre Brute-Force-Werte hinterlassen hat, übernimmt der Reparaturschritt
+  `ImportLegacySecuritySettings` diese drei Werte (gleiche Schlüsselnamen,
+  appid `security`). Nur wenn die App noch keinen eigenen Wert hat; nichts wird
+  überschrieben oder gemischt, der Altbestand bleibt liegen, ein zweiter Lauf
+  tut nichts. Die Übernahme steht im Serverprotokoll. War die App in der alten
+  Datenbank schon installiert (Update-Weg), läuft der Schritt nicht.
+
 ## [1.5.1] - 2026-08-13
 
 ### Changed
