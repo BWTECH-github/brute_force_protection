@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.5.3] - 2026-10-07
+
+Redesign-Linie (Zweig `redesign`): enthält main bis 1.5.2.
+
+### Fixed
+
+- Sprache: Das Feld „Count failed attempts over how many seconds?“ hieß in de, de_DE und de_CH „Wie viele Sekunden soll nach gescheiterten Versuchen gewartet werden bis sich User neu anmelden können?“ – das ist die Sperrdauer (drittes Feld), nicht das Zählfenster. Jetzt „Fehlversuche innerhalb wie vieler Sekunden zählen?“.
+- Anrede: Der Sperrhinweis für öffentliche Links siezte im Du-Katalog (de, de_CH); beide Sperrhinweise sind jetzt gleich formuliert („Zu viele fehlgeschlagene (Anmelde-)Versuche. Versuche es in %s erneut.“).
+- de_AT: sechs genutzte Texte ergänzt (Sperrhinweise, Minuten/Stunden, Admin-Beschriftungen).
+
 ## [1.5.2] - 2026-09-26
 
 ### Added
