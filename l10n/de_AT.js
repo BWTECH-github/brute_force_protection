@@ -8,6 +8,12 @@ OC.L10N.register(
     "Count failed login attempts over how many seconds?" : "Für wie viel Sekunden sollen fehlerhafte Login-Versuche gezählt werden?",
     "Ban after how many failed login attempts?" : "Nach wie vielen fehlerhaften Login-Versuchen soll eine Sperre verhängt werden?",
     "Ban for how many seconds?" : "Für wie viele Sekunden sperren?",
-    "Save settings" : "Einstellungen speichern"
+    "Save settings" : "Einstellungen speichern",
+    "Too many failed attempts. Try again in %s." : "Zu viele fehlgeschlagene Versuche. Versuche es in %s erneut.",
+    "Too many failed login attempts. Try again in %s." : "Zu viele fehlgeschlagene Anmeldeversuche. Versuche es in %s erneut.",
+    "Count failed attempts over how many seconds?" : "Fehlversuche innerhalb wie vieler Sekunden zählen?",
+    "_ %n minute_::_ %n minutes_" : ["%n Minute","%n Minuten"],
+    "_ %n hour_::_ %n hours_" : ["%n Stunde","%n Stunden"],
+    "Ban after how many failed attempts?" : "Sperre nach wie vielen gescheiterten Versuchen?"
 },
 "nplurals=2; plural=(n != 1);");
