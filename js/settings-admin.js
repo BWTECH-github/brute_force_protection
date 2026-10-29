@@ -51,14 +51,12 @@ $(document).ready(function(){
 			ungueltig.trigger('focus');
 			return;
 		}
-		OC.msg.startSaving(msg);
-		// Erfolg erst melden, wenn alle drei Werte wirklich gespeichert sind
-		$.when.apply($, felder.map(function(feld) {
-			return OC.AppConfig.setValue('brute_force_protection', feld[1], parseInt($(feld[0]).val(), 10));
-		})).done(function() {
-			OC.msg.finishedSuccess(msg, t('brute_force_protection', 'Preferences are saved'));
-		}).fail(function() {
-			OC.msg.finishedError(msg, t('core', 'Error'));
+		// Das Ergebnis meldet der Kern selbst: OC.AppConfig.setValue fasst die
+		// drei Speichervorgaenge zu EINEM Hinweis zusammen ("Gespeichert" bzw.
+		// Fehler). Eine eigene Erfolgsmeldung stand doppelt daneben.
+		$(msg).stop(true, true).text('').removeClass('error success').hide();
+		felder.forEach(function(feld) {
+			OC.AppConfig.setValue('brute_force_protection', feld[1], parseInt($(feld[0]).val(), 10));
 		});
 	});
 });

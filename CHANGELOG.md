@@ -9,8 +9,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - Verwaltung: Nur ganze Zahlen ab 1 werden gespeichert; ungültige Felder
-  sind markiert und bekommen den Fokus. Die Erfolgsmeldung erscheint erst,
-  wenn alle Werte gespeichert sind. Enter speichert, Beschriftungen stehen
+  sind markiert und bekommen den Fokus. Speichern meldet sich genau einmal
+  über den Hinweis der Oberfläche. Enter speichert, Beschriftungen stehen
   über den Feldern, Speichern ist der Hauptknopf der Karte.
 - Ungültige gespeicherte Werte (0, negativ, keine Zahl) gelten als
   Voreinstellung.
