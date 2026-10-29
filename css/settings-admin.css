@@ -4,6 +4,12 @@
  * inline-flex (zwei Kennungen), die Spalte haengt deshalb am Behaelter.
  */
 
+/* Auf der Seite Sicherheit nehmen alle anderen Karten beide Spalten des
+   Kartenrasters - als halbe Karte stand daneben eine leere Spalte. */
+#body-settings.oco-shell #app-content[class*='oco-bereich-'] #brute-force-protection {
+	grid-column: 1 / -1;
+}
+
 #brute-force-protection .bfp-form {
 	display: flex;
 	flex-direction: column;
