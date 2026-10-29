@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.5.4] - 2026-10-29
+
+### Fixed
+
+- Verwaltung: Nur ganze Zahlen ab 1 werden gespeichert; ungültige Felder
+  sind markiert und bekommen den Fokus. Die Erfolgsmeldung erscheint erst,
+  wenn alle Werte gespeichert sind. Enter speichert, Beschriftungen stehen
+  über den Feldern, Speichern ist der Hauptknopf der Karte.
+- Ungültige gespeicherte Werte (0, negativ, keine Zahl) gelten als
+  Voreinstellung.
+
 ## [1.5.3] - 2026-10-07
 
 Redesign-Linie (Zweig `redesign`): enthält main bis 1.5.2.

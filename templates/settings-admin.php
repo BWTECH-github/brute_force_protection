@@ -31,17 +31,29 @@
 /** @var array $_ */
 /** @var \OCP\IL10N $l */
 script('brute_force_protection', 'settings-admin');
+style('brute_force_protection', 'settings-admin');
 ?>
 <div id="brute-force-protection" class="section">
-	<h2 class="inlineblock"><?php p($l->t('Brute Force Protection')); ?></h2>
-	<span id="save-bfp-settings-message" class="msg" role="status" aria-live="polite" aria-atomic="true"></span>
-	<div>
-		<label for="bfp-threshold-time"><?php p($l->t('Count failed attempts over how many seconds?')) ?></label><br>
-		<input type="number" id="bfp-threshold-time"  value="<?php p($_['bruteForceProtectionTimeThreshold']) ?>"><br>
-		<label for="bfp-fail-tolerance"><?php p($l->t('Ban after how many failed attempts?')) ?></label><br>
-		<input type="number" id="bfp-fail-tolerance"  value="<?php p($_['bruteForceProtectionFailTolerance']) ?>"><br>
-		<label for="bfp-ban-period"><?php p($l->t('Ban for how many seconds?')) ?></label><br>
-		<input type="number" id="bfp-ban-period" value="<?php p($_['bruteForceProtectionBanPeriod']) ?>"><br>
-		<button id="save-bfp-settings" class="save"><?php p($l->t('Save settings'));?></button>
-	</div>
+	<h2><?php p($l->t('Brute Force Protection')); ?></h2>
+	<?php /* Echtes Formular: Enter in einem Feld speichert. novalidate, weil
+		js/settings-admin.js selbst prueft und die Meldung im Statusfeld zeigt
+		statt der Browser-Sprechblase. */ ?>
+	<form id="bfp-settings-form" class="bfp-form" novalidate>
+		<div class="bfp-field">
+			<label for="bfp-threshold-time"><?php p($l->t('Count failed attempts over how many seconds?')) ?></label>
+			<input type="number" id="bfp-threshold-time" min="1" step="1" inputmode="numeric" required value="<?php p($_['bruteForceProtectionTimeThreshold']) ?>">
+		</div>
+		<div class="bfp-field">
+			<label for="bfp-fail-tolerance"><?php p($l->t('Ban after how many failed attempts?')) ?></label>
+			<input type="number" id="bfp-fail-tolerance" min="1" step="1" inputmode="numeric" required value="<?php p($_['bruteForceProtectionFailTolerance']) ?>">
+		</div>
+		<div class="bfp-field">
+			<label for="bfp-ban-period"><?php p($l->t('Ban for how many seconds?')) ?></label>
+			<input type="number" id="bfp-ban-period" min="1" step="1" inputmode="numeric" required value="<?php p($_['bruteForceProtectionBanPeriod']) ?>">
+		</div>
+		<div class="bfp-actions">
+			<button id="save-bfp-settings" type="submit" class="oco-btn-primary"><?php p($l->t('Save settings'));?></button>
+			<span id="save-bfp-settings-message" class="msg" role="status" aria-live="polite" aria-atomic="true"></span>
+		</div>
+	</form>
 </div>

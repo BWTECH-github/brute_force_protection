@@ -20,22 +20,45 @@
  */
 
 $(document).ready(function(){
-	$('#brute-force-protection').on('click','#save-bfp-settings',
-		function() {
-			OC.msg.startSaving('#save-bfp-settings-message');
-			let thresholdTime = $('#bfp-threshold-time').val();
-			let failTolerance = $('#bfp-fail-tolerance').val();
-			let banPeriod = $('#bfp-ban-period').val();
-			if($.isNumeric(thresholdTime) && thresholdTime>0 &&
-				$.isNumeric(failTolerance) && failTolerance>0 &&
-				$.isNumeric(banPeriod) && banPeriod>0) {
-				OC.AppConfig.setValue('brute_force_protection', 'brute_force_protection_time_threshold', thresholdTime);
-				OC.AppConfig.setValue('brute_force_protection', 'brute_force_protection_fail_tolerance', failTolerance);
-				OC.AppConfig.setValue('brute_force_protection', 'brute_force_protection_ban_period', banPeriod);
-				OC.msg.finishedSuccess('#save-bfp-settings-message', t('brute_force_protection', 'Preferences are saved'));
-			} else {
-				OC.msg.finishedError('#save-bfp-settings-message', t('brute_force_protection', 'Inputs must be positive integers'));
+	var msg = '#save-bfp-settings-message';
+	var felder = [
+		['#bfp-threshold-time', 'brute_force_protection_time_threshold'],
+		['#bfp-fail-tolerance', 'brute_force_protection_fail_tolerance'],
+		['#bfp-ban-period', 'brute_force_protection_ban_period']
+	];
+
+	// Nur ganze Zahlen ab 1: $.isNumeric liess "2.5" oder "0.5" durch, der
+	// Server rundet per intval ab - eine Toleranz 0 sperrte schon nach dem
+	// ersten Fehlversuch.
+	function positiveGanzzahl(wert) {
+		return /^[0-9]+$/.test(wert) && parseInt(wert, 10) > 0;
+	}
+
+	// Echtes Formular: Enter in einem Feld speichert wie der Knopf
+	$('#brute-force-protection').on('submit', '#bfp-settings-form', function(event) {
+		event.preventDefault();
+		var ungueltig = null;
+		felder.forEach(function(feld) {
+			var $feld = $(feld[0]);
+			var ok = positiveGanzzahl($.trim($feld.val()));
+			$feld.attr('aria-invalid', ok ? null : 'true');
+			if (!ok && ungueltig === null) {
+				ungueltig = $feld;
 			}
+		});
+		if (ungueltig !== null) {
+			OC.msg.finishedError(msg, t('brute_force_protection', 'Inputs must be positive integers'));
+			ungueltig.trigger('focus');
+			return;
 		}
-	);
+		OC.msg.startSaving(msg);
+		// Erfolg erst melden, wenn alle drei Werte wirklich gespeichert sind
+		$.when.apply($, felder.map(function(feld) {
+			return OC.AppConfig.setValue('brute_force_protection', feld[1], parseInt($(feld[0]).val(), 10));
+		})).done(function() {
+			OC.msg.finishedSuccess(msg, t('brute_force_protection', 'Preferences are saved'));
+		}).fail(function() {
+			OC.msg.finishedError(msg, t('core', 'Error'));
+		});
+	});
 });

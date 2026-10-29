@@ -79,7 +79,8 @@ class HooksTest extends TestCase {
 	}
 
 	public function testRegister() {
-		$this->eventDispatcherMock->expects($this->exactly(6))
+		// sieben Ereignisse seit user.login.throttlequery (Restsperrzeit fuer das Anmeldeformular)
+		$this->eventDispatcherMock->expects($this->exactly(7))
 			->method('addListener');
 		$this->hooks->register();
 	}

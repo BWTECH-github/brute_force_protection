@@ -1,0 +1,47 @@
+/*
+ * Karte "Brute-Force-Schutz" der Verwaltung (Sicherheit).
+ * Beschriftung ueber dem Feld: der Kern macht jedes Label der Einstellungen
+ * inline-flex (zwei Kennungen), die Spalte haengt deshalb am Behaelter.
+ */
+
+#brute-force-protection .bfp-form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--oco-space-4, 16px);
+	margin: 0;
+}
+
+#brute-force-protection .bfp-field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	max-width: 100%;
+}
+
+#brute-force-protection .bfp-field label {
+	font: 500 12px/1.35 var(--oco-font-text, system-ui, sans-serif);
+	color: var(--oco-text-secondary, #5b6675);
+}
+
+#brute-force-protection .bfp-field input {
+	width: 160px;
+	max-width: 100%;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+#brute-force-protection .bfp-field input[aria-invalid="true"] {
+	border-color: var(--oco-danger-ink, #b23b3b);
+}
+
+#brute-force-protection .bfp-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--oco-space-2, 8px) var(--oco-space-4, 16px);
+	margin-top: var(--oco-space-1, 4px);
+}
+
+#brute-force-protection .bfp-actions button {
+	margin: 0;
+}

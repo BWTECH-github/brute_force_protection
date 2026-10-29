@@ -157,4 +157,19 @@ class BruteForceProtectionConfigTest extends TestCase {
 			['1000', 1000]
 		];
 	}
+
+	public function invalidConfTestData() {
+		return [['0'], ['-5'], ['2.5'], ['abc'], ['']];
+	}
+
+	/**
+	 * @dataProvider invalidConfTestData
+	 * @param string $appConfigValue
+	 */
+	public function testInvalidValuesFallBackToDefaults($appConfigValue) {
+		$this->config->method('getAppValue')->willReturn($appConfigValue);
+		$this->assertSame(3, $this->bfpConfig->getBruteForceProtectionFailTolerance());
+		$this->assertSame(60, $this->bfpConfig->getBruteForceProtectionTimeThreshold());
+		$this->assertSame(300, $this->bfpConfig->getBruteForceProtectionBanPeriod());
+	}
 }

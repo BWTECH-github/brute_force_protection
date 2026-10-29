@@ -52,6 +52,24 @@ class BruteForceProtectionConfig {
 	}
 
 	/**
+	 * Gespeicherten Wert als positive Ganzzahl lesen. 0, negative oder
+	 * unlesbare Werte (von Hand oder per occ gesetzt) fallen auf die
+	 * Voreinstellung zurueck: eine Toleranz 0 sperrte sonst schon nach dem
+	 * ersten Fehlversuch, eine Sperrdauer 0 schaltete den Schutz still ab.
+	 *
+	 * @param string $key
+	 * @param int $default
+	 * @return int
+	 */
+	private function positiveInt($key, $default) {
+		$value = \trim((string)$this->config->getAppValue('brute_force_protection', $key, (string)$default));
+		if (\preg_match('/^[0-9]+$/', $value) !== 1 || (int)$value < 1) {
+			return $default;
+		}
+		return (int)$value;
+	}
+
+	/**
 	 * get brute force protection configurations
 	 *
 	 * @return array
@@ -70,12 +88,7 @@ class BruteForceProtectionConfig {
 	 * @return int
 	 */
 	public function getBruteForceProtectionFailTolerance() {
-		$tolerance = $this->config->getAppValue(
-			'brute_force_protection',
-			'brute_force_protection_fail_tolerance',
-			'3'
-		);
-		return \intval($tolerance);
+		return $this->positiveInt('brute_force_protection_fail_tolerance', 3);
 	}
 
 	/**
@@ -84,12 +97,7 @@ class BruteForceProtectionConfig {
 	 * @return int
 	 */
 	public function getBruteForceProtectionTimeThreshold() {
-		$timeThreshold = $this->config->getAppValue(
-			'brute_force_protection',
-			'brute_force_protection_time_threshold',
-			'60'
-		);
-		return \intval($timeThreshold);
+		return $this->positiveInt('brute_force_protection_time_threshold', 60);
 	}
 
 	/**
@@ -98,12 +106,7 @@ class BruteForceProtectionConfig {
 	 * @return int
 	 */
 	public function getBruteForceProtectionBanPeriod() {
-		$banPeriod = $this->config->getAppValue(
-			'brute_force_protection',
-			'brute_force_protection_ban_period',
-			'300'
-		);
-		return \intval($banPeriod);
+		return $this->positiveInt('brute_force_protection_ban_period', 300);
 	}
 
 	/**
